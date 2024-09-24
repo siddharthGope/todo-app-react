@@ -1,51 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Todo.css";
 
-function Task({ task, i, completeTask, removeTask }) {
+function Task({ task, index, completeTask, removeTask }) {
   return (
-    <div>
-      <div
-        className="task"
-        style={{ textDecoration: task.completed ? "line-through" : "" }}
-      >
-        {task.title}
-      </div>
-      {task.completed ? null : (
-        <button
-          style={{ background: "#198754" }}
-          onClick={() => {
-            completeTask(i);
-          }}
-        >
-          Complete
-        </button>
-      )}
-      <button style={{ background: "#ff3100" }} onClick={() => removeTask(i)}>
-        Remove
+    <div
+      className="task"
+      style={{ textDecoration: task.completed ? "line-through" : "" }}
+    >
+      {task.title}
+
+      <button style={{ background: "red" }} onClick={() => removeTask(index)}>
+        x
       </button>
+      <button onClick={() => completeTask(index)}>Complete</button>
     </div>
   );
 }
 
 function CreateTask({ addTask }) {
-  const [newTaskValue, setValue] = useState("");
+  const [value, setValue] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!newTaskValue) return;
-    addTask(newTaskValue);
+    if (!value) return;
+    addTask(value);
     setValue("");
   };
-
   return (
     <form onSubmit={handleSubmit}>
       <input
         type="text"
         className="input"
-        value={newTaskValue}
-        placeholder="Add a new task and press enter"
+        value={value}
+        placeholder="Add a new task"
         onChange={(e) => setValue(e.target.value)}
-      ></input>
+      />
     </form>
   );
 }
@@ -73,33 +62,32 @@ function Todo() {
 
   const addTask = (title) => {
     const newTasks = [...tasks, { title, completed: false }];
-    console.log(newTasks);
     setTasks(newTasks);
   };
 
-  const completeTask = (i) => {
+  const completeTask = (index) => {
     const newTasks = [...tasks];
-    newTasks[i].completed = true;
+    newTasks[index].completed = true;
     setTasks(newTasks);
   };
 
-  const removeTask = (i) => {
+  const removeTask = (index) => {
     const newTasks = [...tasks];
-    newTasks.splice(i, 1);
+    newTasks.splice(index, 1);
     setTasks(newTasks);
   };
+
   return (
     <div className="todo-container">
-      <div className="header">TODO - ITEMS</div>
-      <div>Pending tasks ({tasksRemaining})</div>
+      <div className="header">Pending tasks ({tasksRemaining})</div>
       <div className="tasks">
-        {tasks.map((task, i) => (
+        {tasks.map((task, index) => (
           <Task
             task={task}
-            i={i}
-            key={i}
+            index={index}
             completeTask={completeTask}
             removeTask={removeTask}
+            key={index}
           />
         ))}
       </div>
